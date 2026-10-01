@@ -12,6 +12,7 @@ max_tokens=200). Override per-call when you need longer responses:
 
 Full API by module:
   llm      : ask, chat              (brevity-enforced by default)
+             set_host, get_host     (point every call at another Ollama server)
   embed    : embed, similarity, semantic_search, word_analogy
   rag      : DocumentStore, chunk, rag
   code     : embed_code, code_similarity, code_search, code_analogy
@@ -27,6 +28,7 @@ Full API by module:
 """
 
 from genai.llm      import (ask, chat, next_token_distribution,
+                            set_host, get_host,
                             BRIEF, DEFAULT_MODEL, DEFAULT_MAX_TOKENS)
 from genai.embed    import (embed, similarity, semantic_search, word_analogy,
                             CROSSLINGUAL_STUDY)
@@ -132,7 +134,7 @@ from genai.viz      import (plot_attention, plot_embeddings_2d,
 
 __all__ = [
     # llm
-    "ask", "chat", "next_token_distribution",
+    "ask", "chat", "next_token_distribution", "set_host", "get_host",
     "BRIEF", "DEFAULT_MODEL", "DEFAULT_MAX_TOKENS",
     # embed
     "embed", "similarity", "semantic_search", "word_analogy", "CROSSLINGUAL_STUDY",

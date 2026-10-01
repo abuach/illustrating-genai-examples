@@ -27,7 +27,7 @@ from genai.llm import (SERVER, DEFAULT_MODEL, CODING_MODEL, BRIEF,
 from genai.embed import embed, similarity
 from genai.tokens import count_tokens
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 
 AGENT_MODEL = DEFAULT_MODEL  # capable + fast tool caller (see AGENT_BENCH)
 FAST_MODEL  = "gemma3:1b"    # small, cheap general model for easy routed traffic

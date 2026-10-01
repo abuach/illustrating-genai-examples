@@ -31,7 +31,7 @@ import ollama
 from genai.agent import run_with_trace, show_turn, tool_spec
 from genai.llm import SERVER
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 
 EIS_MODEL = "gpt-oss:20b"
 

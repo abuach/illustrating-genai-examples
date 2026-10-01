@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "illustrating-genai-examples"
+version = "0.1.0"
+description = "The genai companion library for the book Illustrating Generative AI"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.13"
+# Enough for `import genai` and the book's core chapters: prompting, tokens,
+# embeddings, retrieval, agents, thinking, vision, efficiency, and security.
+dependencies = [
+    "ollama>=0.6.0",
+    "numpy>=2.3.4",
+    "matplotlib>=3.10.7",
+    "requests",
+    "torch>=2.9.0",
+    "pillow",
+    "tiktoken>=0.12.0",
+    "transformers>=4.57.1",
+    "scikit-learn>=1.8.0",
+    "adjusttext>=1.3.0",
+    "pygments",
+]
+
+[project.optional-dependencies]
+# Everything the remaining chapters use (see requirements.txt):
+# `pip install "illustrating-genai-examples[all]"`
+all = [
+    "sentence-transformers>=5.5.1",
+    "diffusers>=0.37.1",
+    "accelerate>=1.13.0",
+    "torchvision>=0.24.0",
+    "chromadb>=1.5.9",
+    "mcp>=1.28.1",
+    "langgraph>=1.2.6",
+    "crewai>=0.193.2",
+    "autogen-agentchat>=0.7.5",
+    "autogen-ext[ollama]>=0.7.5",
+    "smolagents>=1.26.0",
+    "ddgs>=9.14.4",
+    "z3-solver>=4.16.0.0",
+    "hypothesis>=6.156.1",
+    "crosshair-tool>=0.0.107",
+    "numba>=0.65.1",
+    "yowasp-yosys>=0.66.0.0.post1165",
+    "pandas>=2.3.3",
+    "statsforecast>=2.0.3",
+    "statsmodels>=0.14.6",
+    "chess>=1.11.2",
+    "ipython",
+]
+
+[tool.setuptools.packages.find]
+include = ["genai*"]
+
+[tool.setuptools.package-data]
+genai = ["book_index/*", "book_index/*/*"]

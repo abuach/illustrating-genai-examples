@@ -3,7 +3,7 @@ import numpy as np
 import ollama
 from genai.llm import SERVER
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 EMBED_MODEL = "nomic-embed-text"
 
 

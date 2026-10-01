@@ -1,10 +1,13 @@
 """LLM performance measurement helpers."""
-import subprocess
 import time
 import requests
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_CHAT_URL = "http://localhost:11434/api/chat"
+from genai import llm as _llm
+
+
+def _url(endpoint: str) -> str:
+    """The current server's API URL, read at call time so set_host() applies."""
+    return f"{_llm.SERVER}/api/{endpoint}"
 
 
 def _metrics(r: dict, model: str) -> dict:
@@ -24,7 +27,7 @@ def _metrics(r: dict, model: str) -> dict:
 
 def time_call(prompt: str, model: str = "llama3.2:latest") -> dict:
     """Run a single generate call and return timing metrics."""
-    resp = requests.post(OLLAMA_URL, json={"model": model, "prompt": prompt, "stream": False})
+    resp = requests.post(_url("generate"), json={"model": model, "prompt": prompt, "stream": False})
     return _metrics(resp.json(), model)
 
 
@@ -39,11 +42,12 @@ def time_chat(messages: list, model: str = "llama3.2:latest",
     the 4,096-token default before a long transcript gets truncated.
     """
     if fresh:
-        subprocess.run(["ollama", "stop", model], capture_output=True)
+        # what `ollama stop` does, sent over the API so it reaches any host
+        requests.post(_url("generate"), json={"model": model, "keep_alive": 0})
     payload = {"model": model, "messages": messages, "stream": False}
     if options:
         payload["options"] = options
-    resp = requests.post(OLLAMA_CHAT_URL, json=payload)
+    resp = requests.post(_url("chat"), json=payload)
     r = resp.json()
     return r["message"]["content"], _metrics(r, model)
 

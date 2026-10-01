@@ -17,27 +17,45 @@ own machine.
 
 ## Setup
 
-### 1. Clone as `genai`
+### 1. Install the package
 
-The modules import each other as `genai.*`, so the checkout folder must be named
-`genai`, and you work from its parent directory:
-
-```bash
-git clone https://github.com/abuach/illustrating-genai-examples.git genai
-```
-
-### 2. Install Python packages
-
-You need Python 3.13 or newer. From inside the `genai` folder:
+You need Python 3.13 or newer. Install straight from GitHub into your project:
 
 ```bash
-pip install -r requirements.txt
+uv add git+https://github.com/abuach/illustrating-genai-examples
 ```
 
-This installs everything every chapter uses, including PyTorch and the agent
-frameworks, so it's a large download. Only the core group at the top of
-`requirements.txt` is needed for `import genai`. Every other package is imported
-only by the chapter that uses it.
+or, with pip:
+
+```bash
+pip install git+https://github.com/abuach/illustrating-genai-examples
+```
+
+That installs the `genai` package and the packages the core chapters need
+(prompting, tokens, embeddings, retrieval, agents, thinking, vision, efficiency,
+and security). For everything every chapter uses, including the agent frameworks,
+add the `all` extra; it's a large download:
+
+```bash
+pip install "illustrating-genai-examples[all] @ git+https://github.com/abuach/illustrating-genai-examples"
+```
+
+To work on the library itself, clone it and install it in editable mode:
+
+```bash
+git clone https://github.com/abuach/illustrating-genai-examples.git
+cd illustrating-genai-examples
+pip install -e ".[all]"
+```
+
+### 2. Note on the book's data
+
+The book's corpus snapshots (`book_corpus.json`, `book_code_corpus.json`,
+`book_output_corpus.json`), the coding models' captured outputs
+(`code_zoo.json`), and the baked results for a few demos aren't included in this
+repository. Without them the library still imports and runs: the corpus loaders
+return an empty list and the captured outputs an empty dict. Drop the files into
+the `genai/` folder of an editable install to bring those demos back.
 
 ### 3. Pull the models
 
@@ -61,6 +79,24 @@ ollama pull gemma3:latest
 
 Some chapters compare a larger zoo of models, such as `gpt-oss:20b`, `qwen3`, `llama3.1`,
 `mistral`, and `gemma4:e2b`. Pull those when a demo asks for them.
+
+### Using a different Ollama server
+
+To use an Ollama server somewhere else, such as a shared class or lab machine, set the
+`OLLAMA_HOST` environment variable (the same one Ollama's own tools read) before you start:
+
+```bash
+export OLLAMA_HOST=http://my-server.example.edu:11434
+```
+
+Or switch from Python at any point; every `genai` call follows:
+
+```python
+from genai import set_host, get_host
+
+set_host("http://my-server.example.edu:11434")   # or "my-server.example.edu"
+print(get_host())
+```
 
 ### Optional extras
 
@@ -162,7 +198,7 @@ idx.search("byte pair encoding", k=3)
 idx.ask("Why does RAG reduce hallucination?")
 ```
 
-`build()` reads the passages from `book_corpus.json`.
+`build()` reads the passages from `book_corpus.json` (see the note on the book's data above).
 
 ## License
 

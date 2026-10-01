@@ -293,8 +293,10 @@ for _t in CODE_TASKS:
 # instruction task, the hole-filling middle for a FIM task (already clipped to the
 # hole, the way an editor keeps only the insertion), or None when a model has no
 # FIM mode at all.
-CODER_OUTPUTS = _json.loads(
-    (_Path(__file__).resolve().parent / "code_zoo.json").read_text())
+# The published library ships without code_zoo.json, so an empty placeholder
+# stands in when it's absent.
+_CODE_ZOO = _Path(__file__).resolve().parent / "code_zoo.json"
+CODER_OUTPUTS = _json.loads(_CODE_ZOO.read_text()) if _CODE_ZOO.exists() else {}
 
 
 def _eq(got, want):

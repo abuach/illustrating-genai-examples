@@ -232,19 +232,25 @@ def build_output_corpus(write: bool = False) -> list:
     return corpus
 
 
+def _load_snapshot(path: Path) -> list:
+    """Read a corpus snapshot if one has been built. The published library ships
+    without the snapshots, so an empty corpus stands in as a placeholder."""
+    return json.loads(path.read_text()) if path.exists() else []
+
+
 def load_book_corpus() -> list:
-    """Load the committed corpus snapshot the demos run against."""
-    return json.loads(SNAPSHOT.read_text())
+    """Load the corpus snapshot the demos run against (empty if not built)."""
+    return _load_snapshot(SNAPSHOT)
 
 
 def load_code_corpus() -> list:
-    """Load the committed code-corpus snapshot."""
-    return json.loads(CODE_SNAPSHOT.read_text())
+    """Load the code-corpus snapshot (empty if not built)."""
+    return _load_snapshot(CODE_SNAPSHOT)
 
 
 def load_output_corpus() -> list:
-    """Load the committed output-corpus snapshot."""
-    return json.loads(OUTPUT_SNAPSHOT.read_text())
+    """Load the output-corpus snapshot (empty if not built)."""
+    return _load_snapshot(OUTPUT_SNAPSHOT)
 
 
 def chapter_sample(corpus: list, chapter: str, n: int = 4) -> list:

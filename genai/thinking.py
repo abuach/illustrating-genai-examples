@@ -6,7 +6,7 @@ from collections import Counter
 import ollama
 from genai.llm import SERVER, DEFAULT_MAX_TOKENS, CODING_MODEL
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 
 DEFAULT_THINKING_MODEL = "qwen3.5:latest"
 

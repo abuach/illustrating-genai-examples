@@ -15,14 +15,81 @@ the `think=False` top-level parameter, or reserve a token budget with
 
     ask = partial(_ask, model="gemma4:e2b", think=False)
     ask = partial(_ask, model="gemma4:e2b", thinking_budget=1000)
+
+Every call goes to the Ollama server on this machine unless you point the
+library elsewhere, either with the OLLAMA_HOST environment variable (the same
+one Ollama's own tools read) or at runtime:
+
+    from genai import set_host
+    set_host("http://class-server.example.edu:11434")
 """
+import os
+import sys
+from urllib.parse import urlsplit
+
 import ollama
 
-SERVER        = "http://localhost:11434"
+
+def _normalize_host(host: str) -> str:
+    """Accept 'myserver', 'myserver:11434', or 'http://myserver:11434/' and
+    return the 'http://myserver:11434' form every caller in the library uses."""
+    host = host.strip().rstrip("/")
+    if "://" not in host:
+        host = "http://" + host
+    parts = urlsplit(host)
+    if parts.scheme == "http" and parts.port is None:
+        host = f"http://{parts.hostname}:11434"
+    return host
+
+
+SERVER        = _normalize_host(os.environ.get("OLLAMA_HOST") or "localhost:11434")
 DEFAULT_MODEL = "gemma4:latest"
 CODING_MODEL  = "qwen2.5-coder:latest"
 
-_client = ollama.Client(host=SERVER)
+
+class _SharedClient:
+    """The one ollama.Client every genai module talks through. Modules import
+    this object instead of building their own, so ``set_host`` can repoint the
+    whole library by swapping the client inside it."""
+
+    def __init__(self, host: str):
+        self.connect(host)
+
+    def connect(self, host: str) -> None:
+        self._inner = ollama.Client(host=host)
+
+    def __getattr__(self, name):
+        return getattr(self._inner, name)
+
+
+_client = _SharedClient(SERVER)
+
+
+def set_host(host: str) -> str:
+    """Point every genai call at the Ollama server at ``host`` and return its
+    normalized URL. Takes a bare hostname, ``host:port``, or a full URL."""
+    global SERVER
+    SERVER = _normalize_host(host)
+    _client.connect(SERVER)
+    # Some modules call ollama.chat(...) directly; repoint those functions too.
+    default = ollama.Client(host=SERVER)
+    for name in ("chat", "generate", "embed", "embeddings", "show",
+                 "list", "ps", "pull"):
+        if hasattr(ollama, name):
+            setattr(ollama, name, getattr(default, name))
+    # Modules that copied the URL at import read it as a global when they run,
+    # so rebinding it in each loaded module is enough.
+    for mod_name, mod in list(sys.modules.items()):
+        if mod_name.startswith("genai.") and mod is not None:
+            for attr in ("SERVER", "_SERVER"):
+                if hasattr(mod, attr):
+                    setattr(mod, attr, SERVER)
+    return SERVER
+
+
+def get_host() -> str:
+    """The Ollama server URL genai is currently talking to."""
+    return SERVER
 
 # ── Default system prompt ────────────────────────────────────────────────────
 BRIEF = (

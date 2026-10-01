@@ -15,7 +15,7 @@ import textwrap
 import ollama
 from genai.llm import SERVER, DEFAULT_MODEL, ask
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 
 # Cold snap: no room to reason, commit one number -- the intuitive System-1 take.
 _DIRECT = " Answer with only a single number. No words, no working, no units."

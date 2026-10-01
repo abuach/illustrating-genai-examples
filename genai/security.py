@@ -1079,7 +1079,7 @@ WORM_EMAIL = (
 INFECTED_HANDOFF = "Room moved to 204.\n\n" + WORM_DIRECTIVE + "\n" + WORM_MARKER
 
 
-_HANDOFF_CLIENT = _ollama.Client(host=_SERVER)
+from genai.llm import _client as _HANDOFF_CLIENT  # shared, so set_host() repoints it
 
 
 def agent_handoff(incoming: str, agent: str = "Sophia's research agent",

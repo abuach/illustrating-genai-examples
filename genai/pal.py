@@ -23,7 +23,7 @@ import ollama
 from genai.llm import SERVER, CODING_MODEL
 from genai.agent import show_turn
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 
 # Prose chain of thought: reason in words, then commit to a parseable final line.
 # This is the baseline PAL is measured against -- the same model, same problem,

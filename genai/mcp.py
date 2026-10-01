@@ -25,6 +25,7 @@ import threading
 from mcp.server.fastmcp import FastMCP
 from mcp.shared.memory import create_connected_server_and_client_session as _session
 
+from genai import llm as _llm
 from genai.agent import run_with_trace
 from genai.arch import EIS_MODEL
 
@@ -721,7 +722,7 @@ def smolagents_book_agent(server=None, model: str = SMOLAGENTS_MODEL):
     from smolagents import CodeAgent, LiteLLMModel
     server = server or build_book_server()
     llm = LiteLLMModel(model_id=f"ollama/{model}",
-                       api_base="http://localhost:11434",
+                       api_base=_llm.SERVER,
                        num_ctx=8192, temperature=0.0)
     return CodeAgent(tools=as_smolagents_tools(server), model=llm,
                      max_steps=4, verbosity_level=0)

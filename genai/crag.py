@@ -32,7 +32,7 @@ from genai.llm import SERVER, DEFAULT_MODEL
 from genai.embed import embed, similarity
 from genai.rag import build_wiki_store, wiki_retrieve_dense, rag
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 
 
 # ── The web-search fallback (the INCORRECT branch) ──────────────────────────────

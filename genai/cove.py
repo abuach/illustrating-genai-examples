@@ -24,7 +24,7 @@ import textwrap
 import ollama
 from genai.llm import SERVER, DEFAULT_MODEL
 
-_client = ollama.Client(host=SERVER)
+from genai.llm import _client  # shared, so set_host() repoints it
 
 # The draft asks for a bare comma-separated list, which is where an over-eager extra
 # item shows up most cleanly. The verify gives the model ROOM to answer in a sentence:
