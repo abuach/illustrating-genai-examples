@@ -1,2 +1,5 @@
 *.json
 __pycache__/
+# Build output from local installs
+build/
+*.egg-info/
