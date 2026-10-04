@@ -25,6 +25,9 @@ dependencies = [
     "pygments",
 ]
 
+[project.scripts]
+persuade-percy = "genai.percy:main"
+
 [project.optional-dependencies]
 # Everything the remaining chapters use (see requirements.txt):
 # `pip install "illustrating-genai-examples[all]"`

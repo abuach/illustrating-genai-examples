@@ -3,3 +3,5 @@ __pycache__/
 # Build output from local installs
 build/
 *.egg-info/
+# Local virtual environment (uv run / uv venv)
+.venv/

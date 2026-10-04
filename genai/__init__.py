@@ -24,6 +24,8 @@ Full API by module:
   tokens   : tokenize, count_tokens
   agent    : run_agent              (tool-calling loop)
   thinking : think                  (deepseek-r1 / reasoning models)
+  classify : classify, Classification (zero-shot labels + confidence)
+  percy    : play_percy, percy_says  (Persuade Percy game; CLI: persuade-percy)
   viz      : plot_attention, plot_embeddings_2d
 """
 
@@ -83,6 +85,8 @@ from genai.thinking import (think, snap_answer, think_answer,
                             accuracy_trials, time_models, NOVEL_PROBLEMS,
                             cot_sample, self_consistent, show_self_consistency,
                             SELF_CONSISTENCY_STUDY, PHI4_REASONING_STUDY)
+from genai.classify import classify, Classification, CLASSIFY_MODEL
+from genai.percy    import play_percy, percy_says, PERCY_QUESTIONS
 from genai.prompting import (direct_answer, step_back, show_step_back,
                             STEP_BACK_PROBLEMS, STEP_BACK_STUDY)
 from genai.pal       import (run_program, cot_answer, pal_solve,
@@ -192,6 +196,10 @@ __all__ = [
     "accuracy_trials", "time_models", "NOVEL_PROBLEMS",
     "cot_sample", "self_consistent", "show_self_consistency",
     "SELF_CONSISTENCY_STUDY", "PHI4_REASONING_STUDY",
+    # classify
+    "classify", "Classification", "CLASSIFY_MODEL",
+    # percy
+    "play_percy", "percy_says", "PERCY_QUESTIONS",
     # prompting
     "direct_answer", "step_back", "show_step_back",
     "STEP_BACK_PROBLEMS", "STEP_BACK_STUDY",
