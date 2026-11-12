@@ -540,8 +540,8 @@ def show_confidence(question: str) -> tuple:
     ``(answer, score)``."""
     answer, score = confident_answer(question)
     show_turn("USER", question)
-    show_turn(f"SOPHIA ({score}/5)", _clip(answer, 140))
-    if score <= 2:
+    show_turn(f"SOPHIA ({score}/5)" if score else "SOPHIA (no score)", _clip(answer, 140))
+    if score is not None and score <= 2:
         show_turn("ESCALATE", "low confidence: hold the answer and flag it for a "
                               "human and a source check before the reader sees it")
     return answer, score
@@ -1939,9 +1939,12 @@ def confident_answer(question: str, model: str = DEFAULT_MODEL):
         f"Rate your confidence 1 (guessing) to 5 (certain).\n"
         f"Q: {question}\nA: {answer}\nSingle digit only.",
         model=model, max_tokens=3, thinking_budget=budget).strip()
-    # Clamp to the 1-5 scale: a model that ignores it and says "11" is just
-    # pinning the top of the scale (maximally, often wrongly, confident).
-    return answer, (min(max(int(score), 1), 5) if score.isdigit() else None)
+    # Take the first number in the reply: some models bold it ("**4**") or keep
+    # writing after it ("5\n1066"). Clamp to the 1-5 scale: a model that ignores
+    # it and says "11" is just pinning the top of the scale (maximally, often
+    # wrongly, confident).
+    number = re.search(r"\d+", score)
+    return answer, (min(max(int(number.group()), 1), 5) if number else None)
 
 
 # ── Calibration bake-off: who knows what they don't know? ─────────────────────
